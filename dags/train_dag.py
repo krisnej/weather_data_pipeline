@@ -6,7 +6,7 @@ from airflow.utils.dates import days_ago
 from docker.types import Mount
 
 with DAG(
-    dag_id="docker_predict_task",
+    dag_id="docker_train_task",
     schedule_interval=None,
     start_date=days_ago(1),
     catchup=False,
@@ -21,8 +21,8 @@ with DAG(
     },
 ) as dag:
 
-    docker_predict_task = DockerOperator(
-        task_id="docker_predict_task",
+    docker_train_task = DockerOperator(
+        task_id="docker_train_task",
         image="train_predict",
         api_version="auto",
         auto_remove=True,
@@ -30,10 +30,10 @@ with DAG(
         mounts=[
             Mount(source="/path/to/local/dags", target="/dags", type="bind"),
         ],
-        container_name="docker-predict-container",
+        container_name="docker-train-container",
         docker_url="unix://var/run/docker.sock",
         network_mode="weather_data_pipeline_bridgenet",
-        entrypoint="python dags/temperature_forecast/predict.py"
+        entrypoint="python dags/temperature_forecast/train.py"
     )
 
-    docker_predict_task
+    docker_train_task
