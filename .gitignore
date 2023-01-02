@@ -1,0 +1,9 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+*.xml
+*.iml
+.idea
+weather_data_postgres
+logs
+.env
