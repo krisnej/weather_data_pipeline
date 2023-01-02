@@ -59,6 +59,8 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+  env_file:
+    - .env
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
@@ -258,9 +260,9 @@ services:
   pgdatabase:
     image: postgres:13
     environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=weather_data
+      - POSTGRES_USER=${DATA_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DATA_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${DATA_POSTGRES_DB}
     volumes:
       - "./weather_data_postgres:/var/lib/postgresql/data:rw"
     ports:

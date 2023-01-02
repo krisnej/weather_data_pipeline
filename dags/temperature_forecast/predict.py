@@ -11,7 +11,7 @@ from utils import get_historical_temperature, pickle_path
 
 lat = 52.084516
 lon = 5.115539
-api_key = os.environ.get('API_KEY')
+api_key = os.environ.get("API_KEY")
 
 Base = declarative_base()
 
@@ -99,19 +99,14 @@ def save_to_db():
     with Session(engine) as session:
         Base.metadata.create_all(engine)
 
+        execution_date = datetime.fromisoformat(os.environ.get("DT")).replace(
+            microsecond=0, second=0, minute=0
+        )
+
         forecast_timestamp = int(
-            time.mktime(
-                (
-                    datetime.now().replace(microsecond=0, second=0, minute=0)
-                    + timedelta(hours=1)
-                ).timetuple()
-            )
+            time.mktime((execution_date + timedelta(hours=1)).timetuple())
         )
-        update_timestamp = int(
-            time.mktime(
-                (datetime.now().replace(microsecond=0, second=0, minute=0)).timetuple()
-            )
-        )
+        update_timestamp = int(time.mktime(execution_date.timetuple()))
 
         insert_forecast_value(session, forecast_timestamp)
         update_actual_value(session, update_timestamp)

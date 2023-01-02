@@ -6,7 +6,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 lat = 52.084516
 lon = 5.115539
-api_key = os.environ.get('API_KEY')
+api_key = os.environ.get("API_KEY")
 pickle_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pipeline.pkl")
 
 
@@ -24,6 +24,7 @@ def get_historical_temperature(date_range: pd.date_range):
         time = int(t.timestamp())
         api_call = f"https://api.openweathermap.org/data/2.5/onecall/timemachine?lat={lat}&lon={lon}&dt={time}&units=metric&appid={api_key}"
         hourlies.append(requests.get(api_call).json()["hourly"])
+        # todo wrap call in try/except so we get the call's error message
     df = (
         pd.concat([pd.DataFrame(hourly) for hourly in hourlies])
         .assign(dt=lambda df: pd.to_datetime(df["dt"], unit="s"))

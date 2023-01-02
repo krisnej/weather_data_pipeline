@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 from airflow import DAG
@@ -26,14 +27,19 @@ with DAG(
         image="train_predict",
         api_version="auto",
         auto_remove=True,
+        environment={"API_KEY": os.environ.get("API_KEY"), "DT": "{{execution_date}}"},
         mount_tmp_dir=False,
         mounts=[
-            Mount(source="/path/to/local/dags", target="/dags", type="bind"),
+            Mount(
+                source=f"{os.environ.get('LOCAL_DAGS_PATH')}/dags",
+                target="/dags",
+                type="bind",
+            ),
         ],
         container_name="docker-predict-container",
         docker_url="unix://var/run/docker.sock",
-        network_mode="weather_data_pipeline_bridgenet",
-        entrypoint="python dags/temperature_forecast/predict.py"
+        network_mode="weather_data_pipeline_bridgenet",  # todo how can I generalize this?
+        entrypoint="python dags/temperature_forecast/predict.py",
     )
 
     docker_predict_task

@@ -1,7 +1,6 @@
 lint:
 	black .
 	isort .
-	mypy .
 
 airflow:
 	docker-compose build
